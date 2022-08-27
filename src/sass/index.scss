@@ -1,2 +1,79 @@
 @import './common';
-@import './example';
+// @import './example';
+
+[data-scroll-container] {
+  padding-top: 10vh;
+}
+.c-scrollbar {
+  top: 10vh !important;
+  height: 90vh !important;
+}
+.search-form {
+  position: fixed;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  background-color: blueviolet;
+  height: 10vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset,
+    rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset,
+    rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px,
+    rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px,
+    rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+}
+.search {
+  margin-left: 15px;
+}
+.loading {
+  width: 50px;
+  height: auto;
+  position: absolute;
+  top: 50%;
+  right: 50px;
+  transform: translateY(-50%);
+}
+.loading.is-hidden {
+  opacity: 0;
+  transition: 250ms ease-in-out;
+}
+img {
+  display: block;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+.gallery {
+  padding: 2vw;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.photo-card {
+  border-radius: 20px;
+  box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+  overflow: hidden;
+  .thumb {
+    width: 100%;
+    height: 30vh;
+  }
+  .info {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 15px;
+    font-size: 12px;
+    p {
+      margin: 0;
+      b {
+        display: block;
+      }
+    }
+  }
+}

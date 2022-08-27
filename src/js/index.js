@@ -18,22 +18,26 @@ const scroll = new LocomotiveScroll({
     smooth: true,
   },
 });
+scroll.update();
+
 const throttleLoadMore = throttle(() => {
   loadMore();
-  scroll.update();
-}, 30);
+}, 80);
 const pixaBayApi = new PixaBay();
+let nothingMoreMsgShowed = false;
 const lightbox = new SimpleLightbox('.gallery a', {
   captionsData: 'alt',
   captionDelay: 250,
 });
-// const throttleScrollHandle = throttle(scrollHandler, 50);
 refs.form.addEventListener('submit', searchImgs);
 
 async function searchImgs(event) {
   event.preventDefault();
   const query = refs.form.elements.searchQuery.value.trim();
-
+  if (query === '') {
+    Notify.info('Empty input');
+    return;
+  }
   showLoader();
   try {
     const result = await pixaBayApi.fetchImgs(query);
@@ -44,19 +48,19 @@ async function searchImgs(event) {
       hideLoader();
       return;
     }
-    scroll.scrollTo('top');
+    scroll.scrollTo('top', { duration: 250 });
+    nothingMoreMsgShowed = false;
     Notify.info(`Hooray! We found ${result.totalHits} images.`);
     clearGallery();
     renderGallery(result.hits);
     lightbox.refresh();
     scroll.on('scroll', scrollHandler);
-    hideLoader();
+    scroll.update();
   } catch (error) {
     Notify.failure(error.message);
   }
-  scroll.update();
+  hideLoader();
 }
-
 function scrollHandler(event) {
   // Animate opacity
   const arrOfElements = Object.values(event.currentElements);
@@ -67,11 +71,18 @@ function scrollHandler(event) {
   }
   //   LoadMore
   if (
+    pixaBayApi.nothingMore &&
+    !nothingMoreMsgShowed &&
+    pixaBayApi.currentPage !== 2
+  ) {
+    Notify.info("We're sorry, but you've reached the end of search results.");
+    nothingMoreMsgShowed = true;
+  }
+  if (
     !pixaBayApi.nothingMore &&
     !pixaBayApi.inProcess &&
     event.limit.y - event.delta.y < 150
   ) {
-    console.log('loadmore');
     throttleLoadMore();
   }
 }
@@ -82,6 +93,7 @@ async function loadMore() {
     const result = await pixaBayApi.fetchImgs();
     renderGallery(result.hits);
     lightbox.refresh();
+    scroll.update();
   } catch (error) {
     console.log(error);
   }
